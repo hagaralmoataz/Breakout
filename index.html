@@ -2,20 +2,27 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>BREAKOUT // TERMINAL</title>
+<title>BREAKOUT // GITHUB ACTIVITY</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="scanlines"></div>
 
   <h1>BREAKOUT</h1>
-  <div class="subtitle">// terminal edition</div>
+  <div class="subtitle">// github activity</div>
 
   <div class="hud">
     <span><span class="label">SCORE </span><span id="score">0</span></span>
     <span><span class="label">LIVES </span><span id="lives">3</span></span>
     <span><span class="label">LEVEL </span><span id="level">1</span></span>
     <span><span class="label">POWER </span><span id="powerup">NONE</span></span>
+  </div>
+
+  <div class="theme-switcher" aria-label="Select theme">
+    <span class="theme-label">THEME</span>
+    <button class="theme-btn active" data-theme="github-dark" type="button">Dark</button>
+    <button class="theme-btn" data-theme="github-light" type="button">Light</button>
+    <button class="theme-btn" data-theme="ocean" type="button">Ocean</button>
   </div>
 
   <canvas id="gameCanvas" width="640" height="480"></canvas>

@@ -2,8 +2,69 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
+const themePalettes = {
+  'github-dark': ['#161b22', '#0e4429', '#196c2e', '#2ea043', '#3fb950'],
+  'github-light': ['#eaeef2', '#9be9a8', '#40c463', '#30a14e', '#216e39'],
+  ocean: ['#0d1b2a', '#093a4c', '#0f4c5c', '#2ec4b6', '#7bdff2']
+};
+
+let rowColors = [...themePalettes['github-dark']];
+
 const W = canvas.width;
 const H = canvas.height;
+
+function applyTheme(themeName) {
+  const palette = themePalettes[themeName] || themePalettes['github-dark'];
+  const root = document.documentElement;
+
+  if (themeName === 'github-dark') {
+    root.style.setProperty('--bg', '#0d1117');
+    root.style.setProperty('--bg-alt', '#161b22');
+    root.style.setProperty('--bg-deep', '#010409');
+    root.style.setProperty('--panel', '#0d1117');
+    root.style.setProperty('--panel-soft', '#161b22');
+    root.style.setProperty('--text', '#c9d1d9');
+    root.style.setProperty('--muted', '#8b949e');
+    root.style.setProperty('--border', '#30363d');
+    root.style.setProperty('--accent', '#238636');
+    root.style.setProperty('--accent-strong', '#2f81f7');
+    root.style.setProperty('--shadow', 'rgba(1, 4, 9, 0.7)');
+  } else if (themeName === 'github-light') {
+    root.style.setProperty('--bg', '#f6f8fa');
+    root.style.setProperty('--bg-alt', '#eef3f8');
+    root.style.setProperty('--bg-deep', '#dfe8f3');
+    root.style.setProperty('--panel', '#ffffff');
+    root.style.setProperty('--panel-soft', '#eef3f8');
+    root.style.setProperty('--text', '#24292f');
+    root.style.setProperty('--muted', '#57606a');
+    root.style.setProperty('--border', '#d0d7de');
+    root.style.setProperty('--accent', '#1f883d');
+    root.style.setProperty('--accent-strong', '#0969da');
+    root.style.setProperty('--shadow', 'rgba(27, 31, 35, 0.12)');
+  } else {
+    root.style.setProperty('--bg', '#08131d');
+    root.style.setProperty('--bg-alt', '#112535');
+    root.style.setProperty('--bg-deep', '#020b12');
+    root.style.setProperty('--panel', '#0b1824');
+    root.style.setProperty('--panel-soft', '#112535');
+    root.style.setProperty('--text', '#dff5ff');
+    root.style.setProperty('--muted', '#9bb8c9');
+    root.style.setProperty('--border', '#233c4d');
+    root.style.setProperty('--accent', '#16a085');
+    root.style.setProperty('--accent-strong', '#2ec4b6');
+    root.style.setProperty('--shadow', 'rgba(2, 11, 18, 0.72)');
+  }
+
+  rowColors = [...palette];
+  document.querySelectorAll('.theme-btn').forEach((button) => {
+    button.classList.toggle('active', button.dataset.theme === themeName);
+  });
+}
+
+const themeButtons = document.querySelectorAll('.theme-btn');
+themeButtons.forEach((button) => {
+  button.addEventListener('click', () => applyTheme(button.dataset.theme));
+});
 
 // GAME STATE:
 let score = 0;
@@ -46,9 +107,9 @@ const powerUps = [];
 const powerUpChance = 0.18;
 const powerUpFallSpeed = 2.2;
 const powerUpTypes = [
-  { type: 'expand', label: 'EXPAND', color: '#6dc9a6', duration: 10000 },
-  { type: 'slow', label: 'SLOW', color: '#f27c9b', duration: 10000 },
-  { type: 'life', label: '1-UP', color: '#6d9bf2', duration: 0 }
+  { type: 'expand', label: 'EXPAND', color: '#3fb950', duration: 10000 },
+  { type: 'slow', label: 'SLOW', color: '#d29922', duration: 10000 },
+  { type: 'life', label: '1-UP', color: '#58a6ff', duration: 0 }
 ];
 const activePowerUps = {
   list: [],
@@ -102,18 +163,16 @@ const brickInfo = {
 };
 
 const levelConfigs = [
-  { rows: 5, cols: 8, padding: 8, offsetTop: 50, offsetLeft: 20, pattern: 'full' },
-  { rows: 4, cols: 10, padding: 6, offsetTop: 48, offsetLeft: 16, pattern: 'checkerboard' },
-  { rows: 6, cols: 7, padding: 10, offsetTop: 40, offsetLeft: 20, pattern: 'castle' },
-  { rows: 5, cols: 9, padding: 7, offsetTop: 52, offsetLeft: 14, pattern: 'pyramid' },
-  { rows: 4, cols: 6, padding: 14, offsetTop: 60, offsetLeft: 24, pattern: 'random' }
+  { rows: 5, cols: 14, padding: 6, offsetTop: 38, offsetLeft: 18, pattern: 'activity' },
+  { rows: 5, cols: 14, padding: 6, offsetTop: 38, offsetLeft: 18, pattern: 'activity' },
+  { rows: 5, cols: 14, padding: 6, offsetTop: 38, offsetLeft: 18, pattern: 'activity' },
+  { rows: 5, cols: 14, padding: 6, offsetTop: 38, offsetLeft: 18, pattern: 'activity' },
+  { rows: 5, cols: 14, padding: 6, offsetTop: 38, offsetLeft: 18, pattern: 'activity' }
 ];
 
-let currentPattern = 'full';
+let currentPattern = 'activity';
 let paused = false;
 
-// Row colors — gives a visual "value" gradient, top rows worth more
-const rowColors = ['#c3d9f7', '#9fc2f2', '#7aa8e8', '#5a8fd6', '#3a6bb8'];
 let bricks = [];
 
 function getLevelConfig(levelNumber) {
@@ -132,6 +191,10 @@ function applyLevelConfig(config) {
 
 function shouldPlaceBrick(r, c) {
   switch (currentPattern) {
+    case 'activity': {
+      const activityChance = 0.32 + level * 0.08 + ((r + c + level) % 5) * 0.04;
+      return Math.random() < Math.min(activityChance, 0.94);
+    }
     case 'checkerboard':
       return (r + c) % 2 === 0;
     case 'castle':
@@ -147,7 +210,9 @@ function shouldPlaceBrick(r, c) {
 }
 
 function createBricks() {
-  applyLevelConfig(getLevelConfig(level));
+  const baseConfig = getLevelConfig(level);
+  applyLevelConfig(baseConfig);
+  currentPattern = 'activity';
   bricks = [];
 
   for (let r = 0; r < brickInfo.rows; r++) {
@@ -424,8 +489,9 @@ function drawBricks() {
       brick.x = x;
       brick.y = y;
 
-      ctx.fillStyle = rowColors[r % rowColors.length];
-      ctx.shadowColor = rowColors[r % rowColors.length];
+      const brickColor = rowColors[Math.min(r, rowColors.length - 1) % rowColors.length];
+      ctx.fillStyle = brickColor;
+      ctx.shadowColor = brickColor;
       ctx.shadowBlur = 6;
       ctx.fillRect(x, y, brickInfo.width, brickInfo.height);
       ctx.shadowBlur = 0;
@@ -434,8 +500,8 @@ function drawBricks() {
 }
 
 function drawPaddle() {
-  ctx.fillStyle = '#9fc2f2';
-  ctx.shadowColor = '#5a8fd6';
+  ctx.fillStyle = '#58a6ff';
+  ctx.shadowColor = '#58a6ff';
   ctx.shadowBlur = 10;
   ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
   ctx.shadowBlur = 0;
@@ -444,8 +510,8 @@ function drawPaddle() {
 function drawBall() {
   ctx.beginPath();
   ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-  ctx.fillStyle = '#eef4fd';
-  ctx.shadowColor = '#9fc2f2';
+  ctx.fillStyle = '#f0f6fc';
+  ctx.shadowColor = '#c9d1d9';
   ctx.shadowBlur = 12;
   ctx.fill();
   ctx.closePath();

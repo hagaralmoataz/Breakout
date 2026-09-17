@@ -1,10 +1,29 @@
+:root {
+  --bg: #0d1117;
+  --bg-alt: #161b22;
+  --bg-deep: #010409;
+  --panel: #0d1117;
+  --panel-soft: #161b22;
+  --text: #c9d1d9;
+  --muted: #8b949e;
+  --border: #30363d;
+  --accent: #238636;
+  --accent-strong: #2f81f7;
+  --shadow: rgba(1, 4, 9, 0.7);
+  --brick-0: #161b22;
+  --brick-1: #0e4429;
+  --brick-2: #196c2e;
+  --brick-3: #2ea043;
+  --brick-4: #3fb950;
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;700&display=swap');
  
   * { margin: 0; padding: 0; box-sizing: border-box; }
  
   body {
-    background: #05080f;
-    color: #9fc2f2;
+    background: radial-gradient(circle at top, var(--bg-alt) 0%, var(--bg) 45%, var(--bg-deep) 100%);
+    color: var(--text);
     font-family: 'JetBrains Mono', monospace;
     display: flex;
     flex-direction: column;
@@ -20,9 +39,9 @@
     pointer-events: none;
     background: repeating-linear-gradient(
       to bottom,
-      rgba(0,0,0,0) 0px,
-      rgba(0,0,0,0.15) 1px,
-      rgba(0,0,0,0) 2px
+      rgba(255,255,255,0) 0px,
+      rgba(255,255,255,0.02) 1px,
+      rgba(255,255,255,0) 2px
     );
     z-index: 50;
   }
@@ -30,15 +49,15 @@
   h1 {
     font-family: 'Press Start 2P', monospace;
     font-size: 20px;
-    color: #9fc2f2;
-    text-shadow: 0 0 8px #5a8fd6, 0 0 16px #16264a;
+    color: var(--text);
+    text-shadow: none;
     letter-spacing: 2px;
-    margin-bottom: 4px;
+    margin-bottom: 8px;
   }
  
   .subtitle {
     font-size: 11px;
-    color: #3d5f8a;
+    color: var(--muted);
     letter-spacing: 3px;
     margin-bottom: 18px;
     text-transform: uppercase;
@@ -52,18 +71,47 @@
     font-size: 13px;
     padding: 0 4px;
     margin-bottom: 8px;
-    color: #cfe0f5;
+    color: var(--text);
   }
  
-  .hud span.label { color: #3d5f8a; }
+  .hud span.label { color: var(--muted); }
+ 
+  .theme-switcher {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 14px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .theme-label {
+    margin-right: 6px;
+    letter-spacing: 1px;
+  }
+
+  .theme-btn {
+    background: var(--panel-soft);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font: inherit;
+    transition: all 0.15s ease;
+  }
+
+  .theme-btn:hover,
+  .theme-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
  
   #gameCanvas {
-    background: #050a14;
-    border: 2px solid #1f3c5c;
-    box-shadow:
-      0 0 0 1px #0a1a2f,
-      0 0 24px rgba(90,143,214,0.15),
-      inset 0 0 40px rgba(0,0,0,0.6);
+    background: var(--panel);
+    border: 2px solid var(--border);
+    box-shadow: 0 14px 28px var(--shadow), inset 0 0 0 1px rgba(255,255,255,0.03);
     max-width: 92vw;
     height: auto;
   }
@@ -71,15 +119,15 @@
   .controls {
     margin-top: 14px;
     font-size: 11px;
-    color: #3d5f8a;
+    color: var(--muted);
     text-align: center;
     line-height: 1.6;
   }
  
   .controls kbd {
-    background: #0e1c28;
-    border: 1px solid #5a8fd6;
-    color: #9fc2f2;
+    background: var(--panel-soft);
+    border: 1px solid var(--border);
+    color: var(--text);
     padding: 2px 6px;
     border-radius: 3px;
     font-family: 'JetBrains Mono', monospace;
@@ -88,7 +136,8 @@
   #overlay {
     position: fixed;
     inset: 0;
-    background: rgba(2,4,8,0.88);
+    background: rgba(13, 17, 23, 0.82);
+    backdrop-filter: blur(6px);
     display: none;
     align-items: center;
     justify-content: center;
@@ -102,30 +151,31 @@
   #overlayTitle {
     font-family: 'Press Start 2P', monospace;
     font-size: 22px;
-    color: #9fc2f2;
-    text-shadow: 0 0 10px #5a8fd6;
+    color: var(--text);
+    text-shadow: none;
     margin-bottom: 14px;
   }
  
   #overlayMsg {
     font-size: 13px;
-    color: #cfe0f5;
+    color: var(--muted);
     margin-bottom: 22px;
   }
  
   #restartBtn {
     font-family: 'Press Start 2P', monospace;
     font-size: 12px;
-    background: transparent;
-    border: 2px solid #5a8fd6;
-    color: #9fc2f2;
+    background: var(--accent);
+    border: 2px solid var(--accent);
+    color: #fff;
     padding: 12px 20px;
     cursor: pointer;
     letter-spacing: 1px;
-    transition: background 0.15s, color 0.15s;
+    transition: transform 0.15s, filter 0.15s;
+    box-shadow: 0 8px 18px rgba(35, 134, 54, 0.35);
   }
  
   #restartBtn:hover {
-    background: #5a8fd6;
-    color: #05080f;
+    transform: translateY(-1px);
+    filter: brightness(1.08);
   }

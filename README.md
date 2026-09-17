@@ -1,18 +1,22 @@
-# Breakout // Terminal
+# Breakout // GitHub Activity
 
-A polished browser-based Breakout clone with retro terminal styling and responsive gameplay.
+A browser-based Breakout clone styled with a GitHub dark theme and contribution-grid inspired colors.
+
+## Overview
+
+This project keeps the classic brick-breaker gameplay but updates the visuals to match a clean GitHub-style aesthetic. The canvas, HUD, overlays, and brick palette now use dark-mode UI tones with green activity-square inspired gradients instead of the earlier neon terminal look.
 
 ## Game features
 
-- Classic paddle-and-ball brick breaker mechanics
-- Multiple level layouts with varied brick patterns and spacing
-- Dynamic level progression: the ball speeds up on each new level
-- Power-ups dropped from broken bricks: wide paddle, slow ball, and 1-UP extra life
-- Pause/resume using the `P` key
-- Keyboard and mouse paddle control
-- Score, lives, level, and active power-up HUD display
-- Game over overlay with restart support
-- Stylized CRT-inspired visuals and glow effects
+- Classic paddle-and-ball gameplay
+- Multiple level layouts with varied brick patterns
+- Increasing difficulty as you advance through levels
+- Power-ups dropped from bricks: wide paddle, slow ball, and extra life
+- Keyboard and mouse paddle controls
+- Pause/resume support via the `P` key
+- Score, lives, current level, and active power-up HUD
+- Restartable game-over overlay
+- GitHub dark theme with contribution-grid-inspired brick colors
 
 ## Controls
 
@@ -23,20 +27,30 @@ A polished browser-based Breakout clone with retro terminal styling and responsi
 
 ## Gameplay
 
-Players start with a paddle and a ball that rests on the paddle until launched. The objective is to clear all bricks by bouncing the ball off the paddle and into the bricks. Each cleared level loads a new brick arrangement, and the game continues until the player loses all lives.
+The player controls a paddle at the bottom of the screen and launches a ball upward to break every brick. Each level introduces a different arrangement, and the ball becomes faster as levels progress.
 
-Breaking a brick has a chance to drop a falling power-up capsule. Catching one with the paddle triggers its effect:
+Breaking bricks has a chance to drop a falling power-up. Collecting one applies the effect:
 
 | Power-up | Effect | Duration |
 |---|---|---|
-| Wide Paddle | Paddle width increases | 10 seconds |
-| Slow Ball | Ball movement slows for the duration | 10 seconds |
-| 1-UP | Extra life is granted instantly | Instant |
+| Expand | Paddle width increases | 10 seconds |
+| Slow | Ball speed is reduced | 10 seconds |
+| 1-UP | Extra life is granted | Instant |
 
-Timed power-ups display a live countdown in the HUD. Losing a life clears active temporary power-ups and resets the paddle to its normal width.
+Active temporary power-ups are shown in the HUD. Losing a life clears temporary effects and resets the paddle.
+
+## Theme update
+
+The recent visual refresh changes the game from a blue retro terminal style to a GitHub dark mode design:
+
+- dark background and panels
+- subtle gray borders and UI details
+- GitHub-inspired green brick palette
+- modern, minimal scoreboard styling
+- cleaner overlay and button treatments
 
 ## Project files
 
-- `index.html` — game UI, canvas, HUD, and overlay elements
-- `style.css` — retro visual styling and layout
-- `script.js` — game logic, input handling, collisions, power-ups, and rendering
+- `index.html` — page structure, HUD, and overlay UI
+- `style.css` — GitHub dark-theme visual design and layout
+- `script.js` — gameplay logic, collisions, rendering, and power-ups
