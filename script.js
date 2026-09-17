@@ -413,11 +413,16 @@ function nextLevel() {
 }
 
 function clearActivePowerUps() {
-  activePowerUps.list = activePowerUps.list.filter(p => p.type === 'life');
-  activePowerUps.expand = activePowerUps.list.some(p => p.type === 'expand');
-  activePowerUps.slow = activePowerUps.list.some(p => p.type === 'slow');
-  paddle.width = activePowerUps.expand ? Math.min(paddle.baseWidth + 42, 180) : paddle.baseWidth;
-  setBallSpeedModifier(activePowerUps.slow ? 0.72 : 1);
+  activePowerUps.list = [];
+  activePowerUps.expand = false;
+  activePowerUps.slow = false;
+  paddle.width = paddle.baseWidth;
+  setBallSpeedModifier(1);
+}
+
+function stopPowerUpsOnLifeLoss() {
+  powerUps.length = 0;
+  clearActivePowerUps();
 }
 
 function loseLife() {
@@ -426,8 +431,8 @@ function loseLife() {
   if (lives <= 0) {
     endGame(false);
   } else {
+    stopPowerUpsOnLifeLoss();
     gameRunning = false;
-    clearActivePowerUps();
     resetBallOnPaddle();
   }
 }
@@ -508,10 +513,13 @@ function drawPaddle() {
 }
  
 function drawBall() {
+  const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim().toLowerCase();
+  const isLightTheme = bg === '#f6f8fa' || bg === '#f6f8fa';
+
   ctx.beginPath();
   ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-  ctx.fillStyle = '#f0f6fc';
-  ctx.shadowColor = '#c9d1d9';
+  ctx.fillStyle = isLightTheme ? '#1f2937' : '#f0f6fc';
+  ctx.shadowColor = isLightTheme ? '#374151' : '#c9d1d9';
   ctx.shadowBlur = 12;
   ctx.fill();
   ctx.closePath();
